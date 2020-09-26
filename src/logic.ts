@@ -1,7 +1,7 @@
 import {Choices} from './steps';
 import {Ticket, tickets} from './tickets';
 
-interface Suggestion {
+export interface Suggestion {
   title: string
   price: number;
   quantity: number;
@@ -15,7 +15,7 @@ function getTicketTitle(ticket: Ticket, hasDiscount: boolean): string {
   return `${ticket.title}${hasDiscount ? ' reduced' : ''}`;
 }
 
-export default function suggestTickets(choices: Choices): Suggestion[] {
+export function suggestTickets(choices: Choices): Suggestion[] {
   const days = parseInt(choices.time, 10);
   const hasDiscount = choices.hasDiscount === 'yes';
   if (choices.quantity === 'more') {

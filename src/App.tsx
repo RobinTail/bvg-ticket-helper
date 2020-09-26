@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
 import 'semantic-ui-css/semantic.min.css'
+import * as React from 'react';
+import {useState} from 'react';
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form';
 import Message from 'semantic-ui-react/dist/commonjs/collections/Message';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
@@ -9,8 +10,8 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import Label from 'semantic-ui-react/dist/commonjs/elements/Label';
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion';
-import suggestTickets from './logic';
-import {steps} from './steps';
+import {suggestTickets, Suggestion} from './logic';
+import {Choices, StepCode, steps} from './steps';
 import styled from 'styled-components';
 
 const HolderWithMargins = styled.div`
@@ -23,20 +24,20 @@ const HolderWithMargins = styled.div`
 function App() {
   const [name, setName] = useState('');
   const [isNameAccepted, setIsNameAccepted] = useState(false);
-  const [nameError, setNameError] = useState(undefined);
+  const [nameError, setNameError] = useState(undefined as string | undefined);
   const [activeStepIndex, setStep] = useState(0);
-  const [choices, setChoices] = useState({});
+  const [choices, setChoices] = useState({} as Partial<Choices>);
   const [isDone, setIsDone] = useState(false);
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState([] as Suggestion[]);
 
-  const handleChoiceClick = (stepCode, optionCode) => {
+  const handleChoiceClick = (stepCode: StepCode, optionCode: string) => {
     const newChoices = {
       ...choices,
       [stepCode]: optionCode
     };
     setChoices(newChoices);
     if (activeStepIndex === steps.length - 1) {
-      setSuggestions(suggestTickets(newChoices));
+      setSuggestions(suggestTickets(newChoices as Choices));
       setIsDone(true);
     } else {
       setStep(activeStepIndex + 1);
@@ -53,14 +54,14 @@ function App() {
     setSuggestions([]);
   }
 
-  const handleNameChange = (event) => {
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   }
 
   const handleAcceptName = () => {
     if (name.trim().length > 0) {
       setIsNameAccepted(true);
-      setNameError(null);
+      setNameError(undefined);
     } else {
       setNameError('Your name is required');
     }
@@ -95,7 +96,7 @@ function App() {
             {step.options.map((option) => (
               <Button
                 key={option.code}
-                onClick={handleChoiceClick.bind(this, step.code, option.code)}
+                onClick={() => handleChoiceClick(step.code, option.code)}
                 primary={choices[step.code] === option.code}
                 disabled={isDone}
               >
@@ -108,14 +109,14 @@ function App() {
     </Accordion>
   );
 
-  const decisionNotice = suggestions && (
+  const decisionNotice = (suggestions.length > 0) && (
     <Message positive icon>
       <Icon name='idea'/>
       <Message.Content>
         <Message.Header>Decision</Message.Header>
         <p>I advise you to purchase the following tickets, {name}:</p>
-        {suggestions.map(({quantity, title, price}) => (
-          <Label.Group>
+        {suggestions.map(({quantity, title, price}, index) => (
+          <Label.Group key={index}>
             <Label basic pointing='right'>
               {`${quantity} × `}
             </Label>

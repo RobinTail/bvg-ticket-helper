@@ -11,7 +11,7 @@ const stepCodes = {
   hasDiscount: true
 }
 
-type StepCode = keyof typeof stepCodes;
+export type StepCode = keyof typeof stepCodes;
 
 interface Step {
   code: StepCode;
