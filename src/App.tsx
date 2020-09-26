@@ -129,7 +129,7 @@ function App() {
             </Label>
           </Label.Group>
         ))}
-        {suggestions.length > 1 ? (
+        {suggestions.length > 1 || suggestions[0].quantity > 1 ? (
           <p>Total: {
             suggestions
               .reduce((total, {price, quantity}) => total + price * quantity, 0)
@@ -145,7 +145,11 @@ function App() {
     <Container text>
       <Header size='huge' textAlign='center'>
         <Header.Content>BVG Ticket Helper</Header.Content>
-        <Header.Subheader>for short trips and holidays</Header.Subheader>
+        <Header.Subheader>
+          A lot of people come to Berlin <em>for short trips and holiday</em>. They often don’t know how to decide what
+          ticket to get in order to use the city’s public transport. There are several ticket options based on the
+          amount of stations per trip, how much time the person is staying in the city, their age and so on.
+        </Header.Subheader>
       </Header>
 
       <HolderWithMargins>
