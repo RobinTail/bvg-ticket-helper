@@ -26,9 +26,11 @@ function App() {
   const [isNameAccepted, setIsNameAccepted] = useState(false);
   const [nameError, setNameError] = useState(undefined as string | undefined);
   const [activeStepIndex, setStep] = useState(0);
-  const [choices, setChoices] = useState({} as Partial<Choices>);
+  const [choices, setChoices] = useState({} as Choices);
   const [isDone, setIsDone] = useState(false);
   const [suggestions, setSuggestions] = useState([] as Suggestion[]);
+
+  const relevantSteps = steps.filter((step) => step.isRelevant(choices));
 
   const handleChoiceClick = (stepCode: StepCode, optionCode: string) => {
     const newChoices = {
@@ -36,8 +38,8 @@ function App() {
       [stepCode]: optionCode
     };
     setChoices(newChoices);
-    if (activeStepIndex === steps.length - 1) {
-      setSuggestions(suggestTickets(newChoices as Choices));
+    if (activeStepIndex === relevantSteps.length - 1) {
+      setSuggestions(suggestTickets(newChoices));
       setIsDone(true);
     } else {
       setStep(activeStepIndex + 1);
@@ -84,7 +86,7 @@ function App() {
 
   const questionsWizard = (
     <Accordion exclusive styled={!isDone} fluid>
-      {steps.map((step, index) => (
+      {relevantSteps.map((step, index) => (
         <React.Fragment key={index}>
           <Accordion.Title active={activeStepIndex === index || isDone}>
             {step.title}

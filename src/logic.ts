@@ -16,7 +16,7 @@ function getTicketTitle(ticket: Ticket, hasDiscount: boolean): string {
 }
 
 export function suggestTickets(choices: Choices): Suggestion[] {
-  const days = parseInt(choices.time, 10);
+  const days = parseInt(choices.time!, 10);
   const hasDiscount = choices.hasDiscount === 'yes';
   if (choices.quantity === 'more') {
     let suggestedTicket: Ticket;
@@ -31,7 +31,7 @@ export function suggestTickets(choices: Choices): Suggestion[] {
       quantity: days
     }]
   } else {
-    const tripsPerDay = parseInt(choices.quantity, 10);
+    const tripsPerDay = parseInt(choices.quantity!, 10);
     const totalTrips = tripsPerDay * days;
     const numberOfTrip4 = Math.floor(totalTrips / 4);
     const numberOfRegular = totalTrips % 4;

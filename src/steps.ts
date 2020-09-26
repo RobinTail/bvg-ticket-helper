@@ -13,11 +13,14 @@ const stepCodes = {
 
 export type StepCode = keyof typeof stepCodes;
 
+type RelevanceChecker = (choices: Choices) => boolean;
+
 interface Step {
   code: StepCode;
   title: string;
   description?: string;
   options: Option[];
+  isRelevant: RelevanceChecker;
 }
 
 const booleanOptions: Option[] = [
@@ -45,33 +48,44 @@ const quantityOptions: Option[] = [1,2,3,4].map((quantity) => ({
   title: 'More'
 }]);
 
+const alwaysRelevant: RelevanceChecker = () => true;
+
 export const steps: Step[] = [
   {
     code: 'time',
     title: 'How much time are you planning on staying in the city?',
-    options: timeOptions
+    options: timeOptions,
+    isRelevant: alwaysRelevant
   },
   {
     code: 'quantity',
     title: 'How much rides are you going to have in a day?',
-    options: quantityOptions
+    options: quantityOptions,
+    isRelevant: alwaysRelevant
   },
   {
     code: 'isShort',
     title: 'Are your rides going to be short?',
     description: '3 stops on a train or 6 stops on a bus',
-    options: booleanOptions
+    options: booleanOptions,
+    isRelevant: (choices) => { // not relevant for day tickets
+      return choices.quantity !== 'more';
+    }
   },
   {
     code: 'isRural',
     title: 'Are you going to visit rural districts surrounding Berlin?',
-    options: booleanOptions
+    options: booleanOptions,
+    isRelevant: (choices) => { // not relevant for short tickets
+      return !(choices.quantity !== 'more' && choices.isShort === 'yes');
+    }
   },
   {
     code: 'hasDiscount',
     title: 'Are you under 14 years old?',
-    options: booleanOptions
+    options: booleanOptions,
+    isRelevant: alwaysRelevant
   }
 ];
 
-export type Choices = {[K in StepCode]: string};
+export type Choices = {[K in StepCode]?: string};
