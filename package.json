@@ -1,7 +1,14 @@
 {
-  "name": "ninebarc",
+  "name": "bvg_ticket_helper",
+  "description": "BVG Ticket Helper for Berlin visitors: suggests tickets based on the responses of some questions.",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Anna Bocharova",
+    "email": "robin_tail@me.com"
+  },
+  "keywords": ["BVG", "ticket", "Berlin", "transport"],
+  "license": "gpl-3.0",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
