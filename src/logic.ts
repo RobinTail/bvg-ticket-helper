@@ -28,7 +28,7 @@ export function suggestTickets(choices: Choices): Suggestion[] {
     return [{
       title: getTicketTitle(suggestedTicket, hasDiscount),
       price: getTicketPrice(suggestedTicket, hasDiscount),
-      quantity: 1
+      quantity: days
     }]
   } else {
     const tripsPerDay = parseInt(choices.quantity, 10);
