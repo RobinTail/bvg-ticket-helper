@@ -144,7 +144,7 @@ function App() {
   return (
     <Container text>
       <Header size='huge' textAlign='center'>
-        <Header.Content>BVG Ticket Helper</Header.Content>
+        <Header.Content>BVG Ticket Helper for Berlin Visitors</Header.Content>
         <Header.Subheader>
           A lot of people come to Berlin <em>for short trips and holiday</em>. They often don’t know how to decide what
           ticket to get in order to use the city’s public transport. There are several ticket options based on the
