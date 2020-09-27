@@ -66,7 +66,7 @@ export const questions: Question[] = [
   {
     code: 'people',
     title: 'Are you riding in a group?',
-    description: 'If so, then how many people in the group?',
+    description: 'If so, then how many people are in the group?',
     options: groupOptions,
     isRelevant: alwaysRelevant,
   },
@@ -98,7 +98,7 @@ export const questions: Question[] = [
     title: 'Are you under 14 years old?',
     options: booleanOptions,
     isRelevant: (answers) => { // not relevant for groups
-      return answers.people === '1';
+      return answers.people === '1' || answers.people === undefined; // initially visible
     }
   }
 ];
