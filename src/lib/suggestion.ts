@@ -1,4 +1,4 @@
-import {Choices} from './steps';
+import {Answers} from './questions';
 import {Ticket, tickets} from './tickets';
 
 export interface Suggestion {
@@ -15,15 +15,15 @@ function getTicketTitle(ticket: Ticket, hasDiscount: boolean): string {
   return `${ticket.title}${hasDiscount ? ' reduced' : ''}`;
 }
 
-export function suggestTickets(choices: Choices): Suggestion[] {
-  const days = parseInt(choices.time!, 10);
-  const hasDiscount = choices.hasDiscount === 'yes';
-  if (choices.quantity === 'more') {
+export function suggestTickets(answers: Answers): Suggestion[] {
+  const days = parseInt(answers.time!, 10);
+  const hasDiscount = answers.hasDiscount === 'yes';
+  if (answers.quantity === 'more') {
     let suggestedTicket: Ticket;
-    if (choices.isGroup === 'yes') {
-      suggestedTicket = choices.isRural === 'yes' ? tickets.dayGroupABC : tickets.dayGroupAB;
+    if (answers.isGroup === 'yes') {
+      suggestedTicket = answers.isRural === 'yes' ? tickets.dayGroupABC : tickets.dayGroupAB;
     } else {
-      suggestedTicket = choices.isRural === 'yes' ? tickets.dayABC : tickets.dayAB;
+      suggestedTicket = answers.isRural === 'yes' ? tickets.dayABC : tickets.dayAB;
     }
     return [{
       title: getTicketTitle(suggestedTicket, hasDiscount),
@@ -31,15 +31,15 @@ export function suggestTickets(choices: Choices): Suggestion[] {
       quantity: days
     }]
   } else {
-    const tripsPerDay = parseInt(choices.quantity!, 10);
+    const tripsPerDay = parseInt(answers.quantity!, 10);
     const totalTrips = tripsPerDay * days;
     const numberOfTrips4 = Math.floor(totalTrips / 4);
     const numberOfSingleTrips = totalTrips % 4;
     let combination: { single: Ticket, trip4: Ticket };
-    if (choices.isShort === 'yes') {
+    if (answers.isShort === 'yes') {
       combination = {single: tickets.short, trip4: tickets.short4};
     } else {
-      if (choices.isRural === 'yes') {
+      if (answers.isRural === 'yes') {
         combination = {single: tickets.singleABC, trip4: tickets.trip4ABC};
       } else {
         combination = {single: tickets.singleAB, trip4: tickets.trip4AB};

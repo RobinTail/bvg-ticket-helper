@@ -3,7 +3,7 @@ interface Option {
   title: string;
 }
 
-const stepCodes = {
+const questionCodes = {
   time: true,
   quantity: true,
   isShort: true,
@@ -12,12 +12,12 @@ const stepCodes = {
   isGroup: true
 }
 
-export type StepCode = keyof typeof stepCodes;
+export type QuestionCode = keyof typeof questionCodes;
 
-type RelevanceChecker = (choices: Choices) => boolean;
+type RelevanceChecker = (answers: Answers) => boolean;
 
-interface Step {
-  code: StepCode;
+interface Question {
+  code: QuestionCode;
   title: string;
   description?: string;
   options: Option[];
@@ -51,7 +51,7 @@ const quantityOptions: Option[] = [1,2,3,4].map((quantity) => ({
 
 const alwaysRelevant: RelevanceChecker = () => true;
 
-export const steps: Step[] = [
+export const questions: Question[] = [
   {
     code: 'time',
     title: 'How much time are you planning on staying in the city?',
@@ -68,8 +68,8 @@ export const steps: Step[] = [
     code: 'isGroup',
     title: 'Are you traveling in a group of 3—5 people?',
     options: booleanOptions,
-    isRelevant: (choices) => { // only relevant for day tickets
-      return choices.quantity === 'more';
+    isRelevant: (answers) => { // only relevant for day tickets
+      return answers.quantity === 'more';
     }
   },
   {
@@ -77,26 +77,26 @@ export const steps: Step[] = [
     title: 'Are your rides going to be short?',
     description: '3 stops on a train or 6 stops on a bus',
     options: booleanOptions,
-    isRelevant: (choices) => { // not relevant for day tickets
-      return choices.quantity !== 'more';
+    isRelevant: (answers) => { // not relevant for day tickets
+      return answers.quantity !== 'more';
     }
   },
   {
     code: 'isRural',
     title: 'Are you going to visit rural districts surrounding Berlin?',
     options: booleanOptions,
-    isRelevant: (choices) => { // not relevant for short tickets
-      return !(choices.quantity !== 'more' && choices.isShort === 'yes');
+    isRelevant: (answers) => { // not relevant for short tickets
+      return !(answers.quantity !== 'more' && answers.isShort === 'yes');
     }
   },
   {
     code: 'hasDiscount',
     title: 'Are you under 14 years old?',
     options: booleanOptions,
-    isRelevant: (choices) => { // not relevant for groups
-      return choices.isGroup !== 'yes';
+    isRelevant: (answers) => { // not relevant for groups
+      return answers.isGroup !== 'yes';
     }
   }
 ];
 
-export type Choices = {[K in StepCode]?: string};
+export type Answers = {[K in QuestionCode]?: string};

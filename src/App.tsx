@@ -11,7 +11,7 @@ import Label from 'semantic-ui-react/dist/commonjs/elements/Label';
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion';
 import {suggestTickets} from './lib/suggestion';
-import {Choices, StepCode, steps} from './lib/steps';
+import {Answers, QuestionCode, questions} from './lib/questions';
 import styled from 'styled-components';
 
 const HolderWithMargins = styled.div`
@@ -21,32 +21,32 @@ const HolderWithMargins = styled.div`
   margin: 20px 0;
 `;
 
-const getRelevantSteps = (choices: Choices) => {
-  return steps.filter((step) => step.isRelevant(choices));
+const getRelevantQuestions = (choices: Answers) => {
+  return questions.filter((question) => question.isRelevant(choices));
 }
 
 function App() {
   const [name, setName] = useState('');
   const [isNameAccepted, setIsNameAccepted] = useState(false);
   const [nameError, setNameError] = useState(undefined as string | undefined);
-  const [activeStepIndex, setStep] = useState(0);
-  const [choices, setChoices] = useState({} as Choices);
-  const relevantSteps = useMemo(() => getRelevantSteps(choices), [choices]);
+  const [activeQuestionIndex, setQuestionIndex] = useState(0);
+  const [choices, setChoices] = useState({} as Answers);
+  const relevantQuestions = useMemo(() => getRelevantQuestions(choices), [choices]);
   const suggestions = useMemo(() => {
-    if (activeStepIndex > relevantSteps.length - 1) {
+    if (activeQuestionIndex > relevantQuestions.length - 1) {
       return suggestTickets(choices);
     }
     return [];
-  }, [activeStepIndex, relevantSteps, choices])
+  }, [activeQuestionIndex, relevantQuestions, choices])
   const isDone = suggestions.length > 0;
 
-  const handleChoiceClick = (stepCode: StepCode, optionCode: string) => {
+  const handleChoiceClick = (questionCode: QuestionCode, optionCode: string) => {
     const newChoices = {
       ...choices,
-      [stepCode]: optionCode
+      [questionCode]: optionCode
     };
     setChoices(newChoices);
-    setStep(activeStepIndex + 1);
+    setQuestionIndex(activeQuestionIndex + 1);
   }
 
   const handleRestartClick = () => {
@@ -54,7 +54,7 @@ function App() {
     setChoices({});
     setName('');
     setNameError(undefined);
-    setStep(0);
+    setQuestionIndex(0);
   }
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -87,20 +87,20 @@ function App() {
 
   const questionsWizard = (
     <Accordion exclusive styled={!isDone} fluid>
-      {relevantSteps.map((step, index) => (
+      {relevantQuestions.map((question, index) => (
         <React.Fragment key={index}>
-          <Accordion.Title active={activeStepIndex === index || isDone}>
-            {step.title}
+          <Accordion.Title active={activeQuestionIndex === index || isDone}>
+            {question.title}
           </Accordion.Title>
-          <Accordion.Content active={activeStepIndex === index || isDone}>
-            {step.description && !isDone ? (
-              <p><em>{step.description}</em></p>
+          <Accordion.Content active={activeQuestionIndex === index || isDone}>
+            {question.description && !isDone ? (
+              <p><em>{question.description}</em></p>
             ) : null}
-            {step.options.map((option) => (
+            {question.options.map((option) => (
               <Button
                 key={option.code}
-                onClick={() => handleChoiceClick(step.code, option.code)}
-                primary={choices[step.code] === option.code}
+                onClick={() => handleChoiceClick(question.code, option.code)}
+                primary={choices[question.code] === option.code}
                 disabled={isDone}
               >
                 {option.title}
