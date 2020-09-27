@@ -21,8 +21,8 @@ const HolderWithMargins = styled.div`
   margin: 20px 0;
 `;
 
-const getRelevantQuestions = (choices: Answers) => {
-  return questions.filter((question) => question.isRelevant(choices));
+const getRelevantQuestions = (answers: Answers) => {
+  return questions.filter((question) => question.isRelevant(answers));
 }
 
 function App() {
@@ -30,28 +30,28 @@ function App() {
   const [isNameAccepted, setIsNameAccepted] = useState(false);
   const [nameError, setNameError] = useState(undefined as string | undefined);
   const [activeQuestionIndex, setQuestionIndex] = useState(0);
-  const [choices, setChoices] = useState({} as Answers);
-  const relevantQuestions = useMemo(() => getRelevantQuestions(choices), [choices]);
+  const [answers, setAnswers] = useState({} as Answers);
+  const relevantQuestions = useMemo(() => getRelevantQuestions(answers), [answers]);
   const suggestions = useMemo(() => {
     if (activeQuestionIndex > relevantQuestions.length - 1) {
-      return suggestTickets(choices);
+      return suggestTickets(answers);
     }
     return [];
-  }, [activeQuestionIndex, relevantQuestions, choices])
+  }, [activeQuestionIndex, relevantQuestions, answers])
   const isDone = suggestions.length > 0;
 
-  const handleChoiceClick = (questionCode: QuestionCode, optionCode: string) => {
-    const newChoices = {
-      ...choices,
+  const handleOptionClick = (questionCode: QuestionCode, optionCode: string) => {
+    const newAnswers = {
+      ...answers,
       [questionCode]: optionCode
     };
-    setChoices(newChoices);
+    setAnswers(newAnswers);
     setQuestionIndex(activeQuestionIndex + 1);
   }
 
   const handleRestartClick = () => {
     setIsNameAccepted(false);
-    setChoices({});
+    setAnswers({});
     setName('');
     setNameError(undefined);
     setQuestionIndex(0);
@@ -99,8 +99,8 @@ function App() {
             {question.options.map((option) => (
               <Button
                 key={option.code}
-                onClick={() => handleChoiceClick(question.code, option.code)}
-                primary={choices[question.code] === option.code}
+                onClick={() => handleOptionClick(question.code, option.code)}
+                primary={answers[question.code] === option.code}
                 disabled={isDone}
               >
                 {option.title}
