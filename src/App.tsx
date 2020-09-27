@@ -1,6 +1,6 @@
 import 'semantic-ui-css/semantic.min.css'
 import * as React from 'react';
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import Form from 'semantic-ui-react/dist/commonjs/collections/Form';
 import Message from 'semantic-ui-react/dist/commonjs/collections/Message';
 import Button from 'semantic-ui-react/dist/commonjs/elements/Button';
@@ -10,7 +10,7 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import Label from 'semantic-ui-react/dist/commonjs/elements/Label';
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion';
-import {suggestTickets, Suggestion} from './lib/suggestion';
+import {suggestTickets} from './lib/suggestion';
 import {Choices, StepCode, steps} from './lib/steps';
 import styled from 'styled-components';
 
@@ -31,9 +31,14 @@ function App() {
   const [nameError, setNameError] = useState(undefined as string | undefined);
   const [activeStepIndex, setStep] = useState(0);
   const [choices, setChoices] = useState({} as Choices);
-  const [isDone, setIsDone] = useState(false);
-  const [suggestions, setSuggestions] = useState([] as Suggestion[]);
-  let relevantSteps = getRelevantSteps(choices);
+  const relevantSteps = useMemo(() => getRelevantSteps(choices), [choices]);
+  const suggestions = useMemo(() => {
+    if (activeStepIndex > relevantSteps.length - 1) {
+      return suggestTickets(choices);
+    }
+    return [];
+  }, [activeStepIndex, relevantSteps, choices])
+  const isDone = suggestions.length > 0;
 
   const handleChoiceClick = (stepCode: StepCode, optionCode: string) => {
     const newChoices = {
@@ -41,23 +46,15 @@ function App() {
       [stepCode]: optionCode
     };
     setChoices(newChoices);
-    relevantSteps = getRelevantSteps(newChoices);
-    if (activeStepIndex >= relevantSteps.length - 1) {
-      setSuggestions(suggestTickets(newChoices));
-      setIsDone(true);
-    } else {
-      setStep(activeStepIndex + 1);
-    }
+    setStep(activeStepIndex + 1);
   }
 
   const handleRestartClick = () => {
-    setIsDone(false);
     setIsNameAccepted(false);
     setChoices({});
     setName('');
     setNameError(undefined);
     setStep(0);
-    setSuggestions([]);
   }
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,7 +112,7 @@ function App() {
     </Accordion>
   );
 
-  const suggestionMessage = (suggestions.length > 0) && (
+  const suggestionMessage = isDone && (
     <Message positive icon>
       <Icon name='idea'/>
       <Message.Content>
