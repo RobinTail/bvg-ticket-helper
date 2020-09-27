@@ -9,7 +9,7 @@ const questionCodes = {
   isShort: true,
   isRural: true,
   hasDiscount: true,
-  isGroup: true
+  people: true
 }
 
 export type QuestionCode = keyof typeof questionCodes;
@@ -49,6 +49,11 @@ const quantityOptions: Option[] = [1,2,3,4].map((quantity) => ({
   title: 'More'
 }]);
 
+const groupOptions: Option[] = [1,2,3,4,5].map((number) => ({
+  code: `${number}`,
+  title: number === 1 ? 'No' : `${number}`
+}));
+
 const alwaysRelevant: RelevanceChecker = () => true;
 
 export const questions: Question[] = [
@@ -59,18 +64,17 @@ export const questions: Question[] = [
     isRelevant: alwaysRelevant
   },
   {
+    code: 'people',
+    title: 'Are you riding in a group?',
+    description: 'If so, then how many people in the group?',
+    options: groupOptions,
+    isRelevant: alwaysRelevant,
+  },
+  {
     code: 'quantity',
     title: 'How much rides are you going to have in a day?',
     options: quantityOptions,
     isRelevant: alwaysRelevant
-  },
-  {
-    code: 'isGroup',
-    title: 'Are you traveling in a group of 3—5 people?',
-    options: booleanOptions,
-    isRelevant: (answers) => { // only relevant for day tickets
-      return answers.quantity === 'more';
-    }
   },
   {
     code: 'isShort',
@@ -85,8 +89,8 @@ export const questions: Question[] = [
     code: 'isRural',
     title: 'Are you going to visit rural districts surrounding Berlin?',
     options: booleanOptions,
-    isRelevant: (answers) => { // not relevant for short tickets
-      return !(answers.quantity !== 'more' && answers.isShort === 'yes');
+    isRelevant: (answers) => { // not relevant short tickets
+      return answers.isShort !== 'yes';
     }
   },
   {
@@ -94,7 +98,7 @@ export const questions: Question[] = [
     title: 'Are you under 14 years old?',
     options: booleanOptions,
     isRelevant: (answers) => { // not relevant for groups
-      return answers.isGroup !== 'yes';
+      return answers.people !== '1';
     }
   }
 ];
