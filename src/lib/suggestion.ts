@@ -33,31 +33,31 @@ export function suggestTickets(choices: Choices): Suggestion[] {
   } else {
     const tripsPerDay = parseInt(choices.quantity!, 10);
     const totalTrips = tripsPerDay * days;
-    const numberOfTrip4 = Math.floor(totalTrips / 4);
-    const numberOfRegular = totalTrips % 4;
-    let combination: { regular: Ticket, trip4: Ticket };
+    const numberOfTrips4 = Math.floor(totalTrips / 4);
+    const numberOfSingleTrips = totalTrips % 4;
+    let combination: { single: Ticket, trip4: Ticket };
     if (choices.isShort === 'yes') {
-      combination = {regular: tickets.short, trip4: tickets.short4};
+      combination = {single: tickets.short, trip4: tickets.short4};
     } else {
       if (choices.isRural === 'yes') {
-        combination = {regular: tickets.singleABC, trip4: tickets.trip4ABC};
+        combination = {single: tickets.singleABC, trip4: tickets.trip4ABC};
       } else {
-        combination = {regular: tickets.singleAB, trip4: tickets.trip4AB};
+        combination = {single: tickets.singleAB, trip4: tickets.trip4AB};
       }
     }
     let suggestions: Suggestion[] = [];
-    if (numberOfTrip4 > 0) {
+    if (numberOfTrips4 > 0) {
       suggestions.push({
         title: getTicketTitle(combination.trip4, hasDiscount),
         price: getTicketPrice(combination.trip4, hasDiscount),
-        quantity: numberOfTrip4
+        quantity: numberOfTrips4
       });
     }
-    if (numberOfRegular > 0) {
+    if (numberOfSingleTrips > 0) {
       suggestions.push({
-        title: getTicketTitle(combination.regular, hasDiscount),
-        price: getTicketPrice(combination.regular, hasDiscount),
-        quantity: numberOfRegular
+        title: getTicketTitle(combination.single, hasDiscount),
+        price: getTicketPrice(combination.single, hasDiscount),
+        quantity: numberOfSingleTrips
       });
     }
     return suggestions;
