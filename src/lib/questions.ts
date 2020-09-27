@@ -51,7 +51,7 @@ const quantityOptions: Option[] = [1,2,3,4].map((quantity) => ({
 
 const groupOptions: Option[] = [1,2,3,4,5].map((number) => ({
   code: `${number}`,
-  title: number === 1 ? 'No' : `${number}`
+  title: number === 1 ? 'I\'m alone' : `${number}`
 }));
 
 const alwaysRelevant: RelevanceChecker = () => true;
@@ -98,7 +98,7 @@ export const questions: Question[] = [
     title: 'Are you under 14 years old?',
     options: booleanOptions,
     isRelevant: (answers) => { // not relevant for groups
-      return answers.people !== '1';
+      return answers.people === '1';
     }
   }
 ];
