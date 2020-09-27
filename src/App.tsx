@@ -10,8 +10,8 @@ import Icon from 'semantic-ui-react/dist/commonjs/elements/Icon';
 import Label from 'semantic-ui-react/dist/commonjs/elements/Label';
 import Segment from 'semantic-ui-react/dist/commonjs/elements/Segment';
 import Accordion from 'semantic-ui-react/dist/commonjs/modules/Accordion';
-import {suggestTickets, Suggestion} from './logic';
-import {Choices, StepCode, steps} from './steps';
+import {suggestTickets, Suggestion} from './lib/suggestion';
+import {Choices, StepCode, steps} from './lib/steps';
 import styled from 'styled-components';
 
 const HolderWithMargins = styled.div`
@@ -111,11 +111,11 @@ function App() {
     </Accordion>
   );
 
-  const decisionNotice = (suggestions.length > 0) && (
+  const suggestionMessage = (suggestions.length > 0) && (
     <Message positive icon>
       <Icon name='idea'/>
       <Message.Content>
-        <Message.Header>Decision</Message.Header>
+        <Message.Header>Suggestion</Message.Header>
         <p>I advise you to purchase the following tickets, {name}:</p>
         {suggestions.map(({quantity, title, price}, index) => (
           <Label.Group key={index}>
@@ -158,7 +158,7 @@ function App() {
         <Button negative onClick={handleRestartClick}>Restart</Button>
       </HolderWithMargins>
 
-      {isDone && decisionNotice}
+      {isDone && suggestionMessage}
       {isNameAccepted ? questionsWizard : nameInputForm}
 
     </Container>
