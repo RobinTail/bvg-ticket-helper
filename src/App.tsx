@@ -21,6 +21,10 @@ const HolderWithMargins = styled.div`
   margin: 20px 0;
 `;
 
+const getRelevantSteps = (choices: Choices) => {
+  return steps.filter((step) => step.isRelevant(choices));
+}
+
 function App() {
   const [name, setName] = useState('');
   const [isNameAccepted, setIsNameAccepted] = useState(false);
@@ -29,8 +33,7 @@ function App() {
   const [choices, setChoices] = useState({} as Choices);
   const [isDone, setIsDone] = useState(false);
   const [suggestions, setSuggestions] = useState([] as Suggestion[]);
-
-  const relevantSteps = steps.filter((step) => step.isRelevant(choices));
+  let relevantSteps = getRelevantSteps(choices);
 
   const handleChoiceClick = (stepCode: StepCode, optionCode: string) => {
     const newChoices = {
@@ -38,7 +41,8 @@ function App() {
       [stepCode]: optionCode
     };
     setChoices(newChoices);
-    if (activeStepIndex === relevantSteps.length - 1) {
+    relevantSteps = getRelevantSteps(newChoices);
+    if (activeStepIndex >= relevantSteps.length - 1) {
       setSuggestions(suggestTickets(newChoices));
       setIsDone(true);
     } else {

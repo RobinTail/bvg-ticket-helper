@@ -8,7 +8,7 @@ export interface Suggestion {
 }
 
 function getTicketPrice(ticket: Ticket, hasDiscount: boolean): number {
-  return hasDiscount ? ticket.reduced : ticket.price;
+  return hasDiscount && ticket.reduced ? ticket.reduced : ticket.price;
 }
 
 function getTicketTitle(ticket: Ticket, hasDiscount: boolean): string {
@@ -20,10 +20,10 @@ export function suggestTickets(choices: Choices): Suggestion[] {
   const hasDiscount = choices.hasDiscount === 'yes';
   if (choices.quantity === 'more') {
     let suggestedTicket: Ticket;
-    if (choices.isRural === 'yes') {
-      suggestedTicket = tickets.dayABC;
+    if (choices.isGroup === 'yes') {
+      suggestedTicket = choices.isRural === 'yes' ? tickets.dayGroupABC : tickets.dayGroupAB;
     } else {
-      suggestedTicket = tickets.dayAB;
+      suggestedTicket = choices.isRural === 'yes' ? tickets.dayABC : tickets.dayAB;
     }
     return [{
       title: getTicketTitle(suggestedTicket, hasDiscount),

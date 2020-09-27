@@ -8,7 +8,8 @@ const stepCodes = {
   quantity: true,
   isShort: true,
   isRural: true,
-  hasDiscount: true
+  hasDiscount: true,
+  isGroup: true
 }
 
 export type StepCode = keyof typeof stepCodes;
@@ -64,6 +65,14 @@ export const steps: Step[] = [
     isRelevant: alwaysRelevant
   },
   {
+    code: 'isGroup',
+    title: 'Are you traveling in a group of 3—5 people?',
+    options: booleanOptions,
+    isRelevant: (choices) => { // only relevant for day tickets
+      return choices.quantity === 'more';
+    }
+  },
+  {
     code: 'isShort',
     title: 'Are your rides going to be short?',
     description: '3 stops on a train or 6 stops on a bus',
@@ -84,7 +93,9 @@ export const steps: Step[] = [
     code: 'hasDiscount',
     title: 'Are you under 14 years old?',
     options: booleanOptions,
-    isRelevant: alwaysRelevant
+    isRelevant: (choices) => { // not relevant for groups
+      return choices.isGroup !== 'yes';
+    }
   }
 ];
 

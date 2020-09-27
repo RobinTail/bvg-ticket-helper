@@ -1,7 +1,7 @@
 export interface Ticket {
   title: string;
   price: number;
-  reduced: number;
+  reduced?: number;
 }
 
 const ticketCodes = {
@@ -12,7 +12,9 @@ const ticketCodes = {
   trip4ABC: true,
   short4: true,
   dayAB: true,
-  dayABC: true
+  dayABC: true,
+  dayGroupAB: true,
+  dayGroupABC: true
 };
 
 type TicketCode = keyof typeof ticketCodes;
@@ -57,5 +59,13 @@ export const tickets: {[K in TicketCode]: Ticket} = {
     title: 'Day ticket ABC',
     price: 9.60,
     reduced: 6.00
+  },
+  dayGroupAB: {
+    title: 'Small group day ticket AB',
+    price: 23.50
+  },
+  dayGroupABC: {
+    title: 'Small group day ticket ABC',
+    price: 24.90
   }
 };
